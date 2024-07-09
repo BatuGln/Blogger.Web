@@ -2,8 +2,10 @@
 
 namespace Blogger.Web.Models.ViewModel
 {
-    public class AddBlogPostRequest
+    public class EditBlogPostRequest
     {
+        public Guid Id { get; set; }
+
         public string Heading { get; set; }
 
         public string Pagetitle { get; set; }
@@ -23,7 +25,7 @@ namespace Blogger.Web.Models.ViewModel
         public bool Visible { get; set; }
 
         //Displaying the Tags
-        public  IEnumerable<SelectListItem> Tags{ get; set; }
+        public IEnumerable<SelectListItem> Tags { get; set; }
 
         //Collecting The Tags from DB
 
