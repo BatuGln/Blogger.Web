@@ -5,11 +5,16 @@ namespace Blogger.Web.Data
 {
     public class BloggerDbContext : DbContext
     {
-        public BloggerDbContext(DbContextOptions options) : base(options)
+        public BloggerDbContext(DbContextOptions<BloggerDbContext> options) : base(options)
         {
         }
         public DbSet<BlogPost> BlogPosts { get; set; }
 
         public DbSet<Tag> Tags { get; set; }
+
+        public DbSet<BlogPostLike> BlogPostsLike { get; set;}
+
+        public DbSet<BlogPostComment> BlogPostComment { get; set; }
+
     }
 }

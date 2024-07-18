@@ -1,0 +1,28 @@
+﻿using Blogger.Web.Repositories;
+using Microsoft.AspNetCore.Mvc;
+using System.Net;
+
+namespace Blogger.Web.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ImagesController : ControllerBase
+    {
+        private readonly IImageRepository imageRepository;
+
+        public ImagesController(IImageRepository imageRepository)
+        {
+            this.imageRepository = imageRepository;
+        }
+        public async Task<IActionResult> UploadAsync(IFormFile file)
+        {
+            var imageUrl = await imageRepository.UploadAsync(file);
+
+            if (imageUrl == null)
+            {
+                return Problem("Image Upload Failed!", null, (int)HttpStatusCode.InternalServerError);
+            }
+            return new JsonResult(new { link = imageUrl });
+        }
+    }
+}

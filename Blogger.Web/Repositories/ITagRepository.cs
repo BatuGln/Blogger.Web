@@ -6,7 +6,7 @@ namespace Blogger.Web.Repositories
     {
         Task<IEnumerable<Tag>> GetAllAsync();
 
-        Task<Tag?>GetAsync(Guid id);
+        Task<Tag?> GetAsync(Guid id);
 
         Task<Tag?> AddAsync(Tag tag);
 

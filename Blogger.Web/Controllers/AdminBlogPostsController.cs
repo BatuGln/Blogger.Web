@@ -1,24 +1,27 @@
 ﻿using Blogger.Web.Models.Domain;
 using Blogger.Web.Models.ViewModel;
 using Blogger.Web.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Blogger.Web.Controllers
 {
+    [Authorize(Roles = "Admin")]
+
     public class AdminBlogPostsController : Controller
     {
         private readonly ITagRepository tagRepository;
         private readonly IBlogPostRepository blogPostRepository;
 
-        public AdminBlogPostsController(ITagRepository tagRepository,IBlogPostRepository blogPostRepository)
+        public AdminBlogPostsController(ITagRepository tagRepository, IBlogPostRepository blogPostRepository)
         {
             this.tagRepository = tagRepository;
             this.blogPostRepository = blogPostRepository;
         }
 
         [HttpGet]
-       public async Task< IActionResult> Add() 
+        public async Task<IActionResult> Add()
         {
             //get tags from repo
             var tags = await tagRepository.GetAllAsync();
@@ -53,11 +56,11 @@ namespace Blogger.Web.Controllers
             {
 
                 var selectedTagGuid = Guid.Parse(selectedTagId);
-               var existingTag =  await tagRepository.GetAsync(selectedTagGuid);
+                var existingTag = await tagRepository.GetAsync(selectedTagGuid);
 
-                if (existingTag != null) 
+                if (existingTag != null)
                 {
-                selectedTags.Add(existingTag);
+                    selectedTags.Add(existingTag);
                 }
             }
             blogpost.Tags = selectedTags;
@@ -67,22 +70,22 @@ namespace Blogger.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> List() 
+        public async Task<IActionResult> List()
         {
             //call repo
-           var blogPost = await blogPostRepository.GetAllAsync();
+            var blogPost = await blogPostRepository.GetAllAsync();
 
-            return View(blogPost);  
-         
+            return View(blogPost);
+
         }
 
         [HttpGet]
         public async Task<IActionResult> Edit(Guid id)
         {
             // getting result from repo
-           var blogPost = await blogPostRepository.GetAsync(id);
+            var blogPost = await blogPostRepository.GetAsync(id);
             var tagsDomainModel = await tagRepository.GetAllAsync();
-            if(blogPost != null) 
+            if (blogPost != null)
             {
                 //mapping 
                 var model = new EditBlogPostRequest
@@ -104,14 +107,14 @@ namespace Blogger.Web.Controllers
                 };
                 return View(model);
             }
-           
+
 
             //pass to view
             return View(null);
         }
 
         [HttpPost]
-        public async Task<IActionResult>Edit(EditBlogPostRequest editBlogPostRequest)
+        public async Task<IActionResult> Edit(EditBlogPostRequest editBlogPostRequest)
         {
             //mapp vievmodel  back to domain model
             var blogPostDomainModel = new BlogPost
@@ -129,10 +132,10 @@ namespace Blogger.Web.Controllers
             };
 
             var selectedTags = new List<Tag>();
-            foreach(var selectedTag in editBlogPostRequest.SelectedTag)
+            foreach (var selectedTag in editBlogPostRequest.SelectedTag)
             {
 
-                if(Guid.TryParse(selectedTag, out var tag))
+                if (Guid.TryParse(selectedTag, out var tag))
                 {
                     var foundTag = await tagRepository.GetAsync(tag);
 
@@ -159,7 +162,7 @@ namespace Blogger.Web.Controllers
         }
 
 
-        public async Task<IActionResult>Delete(EditBlogPostRequest editBlogPostRequest) 
+        public async Task<IActionResult> Delete(EditBlogPostRequest editBlogPostRequest)
         {
             // repository communication
             var deletedBlogPost = await blogPostRepository.DeleteAsync(editBlogPostRequest.Id);
@@ -169,12 +172,12 @@ namespace Blogger.Web.Controllers
 
 
             }
-            return RedirectToAction("Edit",new {id = editBlogPostRequest.Id});
+            return RedirectToAction("Edit", new { id = editBlogPostRequest.Id });
 
 
 
-        //display
-        
+            //display
+
         }
     }
 }
