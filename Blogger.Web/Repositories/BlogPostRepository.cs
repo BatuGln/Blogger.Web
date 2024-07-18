@@ -15,16 +15,16 @@ namespace Blogger.Web.Repositories
         public async Task<BlogPost> AddAsync(BlogPost blogPost)
         {
             await bloggerDbContext.AddAsync(blogPost);
-           await bloggerDbContext.SaveChangesAsync();
+            await bloggerDbContext.SaveChangesAsync();
             return blogPost;
         }
 
         public async Task<BlogPost?> DeleteAsync(Guid id)
         {
             var existingBlog = await bloggerDbContext.BlogPosts.FindAsync(id);
-            if (existingBlog != null) 
+            if (existingBlog != null)
             {
-            bloggerDbContext.BlogPosts.Remove(existingBlog);
+                bloggerDbContext.BlogPosts.Remove(existingBlog);
                 await bloggerDbContext.SaveChangesAsync();
                 return existingBlog;
             }
@@ -33,24 +33,30 @@ namespace Blogger.Web.Repositories
 
         public async Task<IEnumerable<BlogPost>> GetAllAsync()
         {
-            return await bloggerDbContext.BlogPosts.Include(x=>x.Tags).ToListAsync();  
+            return await bloggerDbContext.BlogPosts.Include(x => x.Tags).ToListAsync();
         }
 
         public async Task<BlogPost?> GetAsync(Guid id)
         {
-            return await bloggerDbContext.BlogPosts.Include(x=>x.Tags).FirstOrDefaultAsync(x=>x.Id == id);
+            return await bloggerDbContext.BlogPosts.Include(x => x.Tags).FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<BlogPost?> GetByUrlhandleAsync(string urlHandle)
+        {
+            return await bloggerDbContext.BlogPosts.Include(x=>x.Tags)
+                .FirstOrDefaultAsync(x =>x.UrlHandle == urlHandle);
         }
 
         public async Task<BlogPost?> UpdateAsync(BlogPost blogPost)
         {
-           var existingBlog =  await bloggerDbContext.BlogPosts.Include(t => t.Tags).FirstOrDefaultAsync(x => x.Id == blogPost.Id);
-            if (existingBlog != null) 
+            var existingBlog = await bloggerDbContext.BlogPosts.Include(t => t.Tags).FirstOrDefaultAsync(x => x.Id == blogPost.Id);
+            if (existingBlog != null)
             {
-                 existingBlog.Id = blogPost.Id;
+                existingBlog.Id = blogPost.Id;
                 existingBlog.Heading = blogPost.Heading;
                 existingBlog.Pagetitle = blogPost.Pagetitle;
                 existingBlog.Content = blogPost.Content;
-                existingBlog.ShortDescription = blogPost.ShortDescription;               
+                existingBlog.ShortDescription = blogPost.ShortDescription;
                 existingBlog.Author = blogPost.Author;
                 existingBlog.FeaturedImageUrl = blogPost.FeaturedImageUrl;
                 existingBlog.UrlHandle = blogPost.UrlHandle;

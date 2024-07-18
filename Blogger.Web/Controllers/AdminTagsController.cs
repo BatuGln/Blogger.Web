@@ -1,14 +1,16 @@
-﻿using Blogger.Web.Data;
-using Blogger.Web.Models.Domain;
+﻿using Blogger.Web.Models.Domain;
 using Blogger.Web.Models.ViewModel;
 using Blogger.Web.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Blogger.Web.Controllers
 {
+    [Authorize(Roles = "Admin")]
+
     public class AdminTagsController : Controller
     {
+
         private readonly ITagRepository tagRepository;
 
         public AdminTagsController(ITagRepository tagRepository)
@@ -20,10 +22,11 @@ namespace Blogger.Web.Controllers
         {
             return View();
         }
+
         [HttpPost]
         [ActionName("Add")]
         public async Task<IActionResult> Add(AddTagRequest addTagRequest)
-        {        
+        {
             // Mapping the tag request to tag model 
             var tag = new Tag
             {
@@ -36,17 +39,19 @@ namespace Blogger.Web.Controllers
 
             return RedirectToAction("List");
         }
+
         [HttpGet]
         [ActionName("List")]
-        public async Task<IActionResult>List()
+        public async Task<IActionResult> List()
         {
-            var tags =await tagRepository.GetAllAsync();
+            var tags = await tagRepository.GetAllAsync();
             return View(tags);
         }
+
         [HttpGet]
-        public async Task< IActionResult >Edit(Guid id)
+        public async Task<IActionResult> Edit(Guid id)
         {
-           
+
             var tag = await tagRepository.GetAsync(id);
 
             if (tag != null)
@@ -63,7 +68,7 @@ namespace Blogger.Web.Controllers
 
             return View(null);
         }
-
+ 
         [HttpPost]
         public async Task<IActionResult> Edit(EditTagRequest editTagRequest)
         {
@@ -75,30 +80,29 @@ namespace Blogger.Web.Controllers
 
             };
             var updatedTag = await tagRepository.UpdateAsync(tag);
-            if (updatedTag != null) 
+            if (updatedTag != null)
             {
-            // success message
+                // success message
             }
             else
             {
 
-            // show failure message -java
+                // show failure message -java
             }
 
             return RedirectToAction("Edit", new { id = editTagRequest.Id });
         }
 
         [HttpPost]
-
-        public async Task< IActionResult >Delete(EditTagRequest editTagRequest) 
+        public async Task<IActionResult> Delete(EditTagRequest editTagRequest)
         {
-         var deletedTag =await tagRepository.DeleteAsync(editTagRequest.Id);
-            if(deletedTag != null)
+            var deletedTag = await tagRepository.DeleteAsync(editTagRequest.Id);
+            if (deletedTag != null)
             {
                 //success
                 return RedirectToAction("List");
             }
-             
+
             // fail message
             return RedirectToAction("Edit", new { id = editTagRequest.Id });
         }

@@ -1,6 +1,5 @@
 ﻿using Blogger.Web.Data;
 using Blogger.Web.Models.Domain;
-using Blogger.Web.Models.ViewModel;
 using Microsoft.EntityFrameworkCore;
 
 namespace Blogger.Web.Repositories
@@ -45,11 +44,11 @@ namespace Blogger.Web.Repositories
 
         public async Task<Tag?> UpdateAsync(Tag tag)
         {
-           var existingTag = await bloggerDbContext.Tags.FindAsync(tag.Id);
-            if(existingTag != null) 
+            var existingTag = await bloggerDbContext.Tags.FindAsync(tag.Id);
+            if (existingTag != null)
             {
-                 existingTag.Name = tag.Name;
-                 existingTag.Displayname = tag.Displayname;
+                existingTag.Name = tag.Name;
+                existingTag.Displayname = tag.Displayname;
 
                 await bloggerDbContext.SaveChangesAsync();
 
@@ -60,5 +59,5 @@ namespace Blogger.Web.Repositories
             return null;
         }
     }
-     
+
 }

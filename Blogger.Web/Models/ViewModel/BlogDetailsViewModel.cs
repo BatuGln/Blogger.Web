@@ -1,6 +1,8 @@
-﻿namespace Blogger.Web.Models.Domain
+﻿using Blogger.Web.Models.Domain;
+
+namespace Blogger.Web.Models.ViewModel
 {
-    public class BlogPost
+    public class BlogDetailsViewModel
     {
         public Guid Id { get; set; }
 
@@ -24,9 +26,12 @@
 
         public ICollection<Tag> Tags { get; set; }
 
-        public ICollection<BlogPostLike>Likes { get; set; }
+        public int TotalLikes { get; set; }
 
-        public ICollection<BlogPostComment> Comments { get; set; }
+        public bool Like {  get; set; }
 
+        public string CommentDescription { get; set; }
+
+        public IEnumerable<BlogComment> Comments { get; set; }   
     }
 }
