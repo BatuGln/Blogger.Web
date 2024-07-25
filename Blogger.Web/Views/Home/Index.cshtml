@@ -46,7 +46,7 @@
         <div class="col-6">
             @if (Model != null && Model.BlogPosts.Any())
             {
-                foreach (var blogPost in Model.BlogPosts)
+                foreach (var blogPost in Model.BlogPosts.Where(x =>x.Visible))
                 {
                    <div class="mb-5 bg-light box-shadow p-4">
                        <img src="@blogPost.FeaturedImageUrl" alt="@blogPost.Heading" 
